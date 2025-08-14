@@ -1,0 +1,5 @@
+{
+  "name": "FeeManager Pro",
+  "description": "A comprehensive fee management application for educational institutions. Track student payments, manage discounts, generate detailed financial reports, and handle user roles with granular permissions. Features include data import/export, dashboard summaries, and visual reports with charts.",
+  "requestFramePermissions": []
+}
