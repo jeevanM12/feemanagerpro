@@ -1,4 +1,3 @@
-
 import { Permissions, User, Student } from './types';
 
 export const defaultUserPermissions: Permissions = {
@@ -28,7 +27,7 @@ export const adminPermissions: Permissions = {
 };
 
 export const initialUsers: User[] = [
-  { email: 'admin@example.com', password: 'adminpassword', role: 'admin', permissions: adminPermissions },
+  { email: 'srisubhodaya@gmail.com', password: 'adminpassword', role: 'admin', permissions: adminPermissions },
   { email: 'user@example.com', password: 'userpassword', role: 'user', permissions: defaultUserPermissions },
 ];
 

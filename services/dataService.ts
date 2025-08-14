@@ -1,9 +1,8 @@
-import * as XLSX from 'xlsx';
-import { Student } from '../types';
+import { Student, StudentWithFeeDetails } from '../types';
 import { formatDateTime, calculateFeeDetails } from '../utils';
-
-// We need to declare the XLSX variable because we are loading it from a CDN
-declare var XLSX: any;
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import * as XLSX from 'xlsx';
 
 export const exportToExcel = (data: any[], filename: string, sheetname: string = 'Sheet1') => {
     try {
@@ -54,4 +53,107 @@ export const prepareStudentListForExport = (students: Student[]) => {
         }
     });
     return dataToExport;
+};
+
+export const exportToPdf = (data: StudentWithFeeDetails[], filename: string) => {
+    try {
+        const doc = new jsPDF();
+        
+        doc.text("Student Financial Report", 14, 16);
+        doc.setFontSize(10);
+        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 22);
+
+        const tableColumn = ["Name", "Roll No.", "Class", "Total Fees", "Total Paid", "Balance Due"];
+        const tableRows: any[][] = [];
+
+        data.forEach(student => {
+            const studentData = [
+                student.name,
+                student.rollNumber,
+                student.class,
+                `INR ${student.totalFees.toLocaleString()}`,
+                `INR ${student.totalPaid.toLocaleString()}`,
+                `INR ${student.remainingBalance.toLocaleString()}`,
+            ];
+            tableRows.push(studentData);
+        });
+
+        (doc as any).autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: 30,
+            theme: 'grid',
+            headStyles: { fillColor: [22, 160, 133] }
+        });
+
+        doc.save(`${filename}.pdf`);
+        return { success: true };
+    } catch (error) {
+        console.error("Error exporting to PDF:", error);
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+        return { success: false, error: errorMessage };
+    }
+};
+
+export const exportReportToExcel = (summaryData: any[], classData: any[], filename: string) => {
+    try {
+        const summarySheet = XLSX.utils.json_to_sheet(summaryData);
+        const classSheet = XLSX.utils.json_to_sheet(classData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, summarySheet, 'Financial Summary');
+        XLSX.utils.book_append_sheet(workbook, classSheet, 'Class-wise Pending Fees');
+        XLSX.writeFile(workbook, `${filename}.xlsx`);
+        return { success: true };
+    } catch (error) {
+        console.error("Error exporting report to Excel:", error);
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+        return { success: false, error: errorMessage };
+    }
+};
+
+export const exportReportToPdf = (summaryCards: any[], summaryData: any[], classData: any[], filename: string) => {
+    try {
+        const doc = new jsPDF();
+        
+        doc.text("Financial Report Summary", 14, 16);
+        doc.setFontSize(10);
+        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 22);
+
+        // Summary Cards as a table
+        (doc as any).autoTable({
+            head: [['Metric', 'Value']],
+            body: summaryCards.map(c => [c.title, c.isCurrency ? `INR ${c.value.toLocaleString()}` : c.value.toLocaleString()]),
+            startY: 30,
+            theme: 'striped',
+        });
+        const firstTableHeight = (doc as any).lastAutoTable.finalY;
+
+        // Financial Overview table
+        doc.text("Financial Overview Breakdown", 14, firstTableHeight + 15);
+        (doc as any).autoTable({
+            head: [['Category', 'Amount']],
+            body: summaryData.map(d => [d.name, `INR ${d.value.toLocaleString()}`]),
+            startY: firstTableHeight + 20,
+            theme: 'grid',
+            headStyles: { fillColor: [22, 160, 133] }
+        });
+        const secondTableHeight = (doc as any).lastAutoTable.finalY;
+
+        // Class-wise Pending table
+        doc.text("Pending Fees by Class", 14, secondTableHeight + 15);
+        (doc as any).autoTable({
+            head: [['Class', 'Pending Amount']],
+            body: classData.map(d => [d.name, `INR ${d.pending.toLocaleString()}`]),
+            startY: secondTableHeight + 20,
+            theme: 'grid',
+            headStyles: { fillColor: [255, 128, 66] }
+        });
+
+        doc.save(`${filename}.pdf`);
+        return { success: true };
+    } catch (error) {
+        console.error("Error exporting report to PDF:", error);
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+        return { success: false, error: errorMessage };
+    }
 };

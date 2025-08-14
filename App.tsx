@@ -6,10 +6,15 @@ import { ProtectedRoute } from './pages/ProtectedRoute';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { StudentDetailPage } from './pages/StudentDetailPage';
+import { StudentAddPage } from './pages/StudentAddPage';
 import { ReportsPage } from './pages/ReportsPage';
+import { DailyReportPage } from './pages/DailyReportPage';
+import { MonthlyReportPage } from './pages/MonthlyReportPage';
 import { UserManagementPage } from './pages/UserManagementPage';
+import { AccountSettingsPage } from './pages/AccountSettingsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { ToastContainer } from './components/ToastContainer';
+import { StudentEditPage } from './pages/StudentEditPage';
 
 const App = () => {
   return (
@@ -21,17 +26,19 @@ const App = () => {
           
           <Route path="/" element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
             <Route index element={<DashboardPage />} />
-            <Route path="student/:id" element={<StudentDetailPage />} />
+            <Route path="student/new" element={<ProtectedRoute requiredPermission="canAddStudents"><StudentAddPage /></ProtectedRoute>} />
+            <Route path="student/:id" element={<ProtectedRoute requiredPermission="canViewStudents"><StudentDetailPage /></ProtectedRoute>} />
+            <Route path="student/:id/edit" element={<ProtectedRoute requiredPermission="canEditStudents"><StudentEditPage /></ProtectedRoute>} />
             
             <Route path="reports" element={<ProtectedRoute requiredPermission="canViewReports"><Outlet/></ProtectedRoute>}>
                 <Route path="summary" element={<ReportsPage />} />
-                {/* Placeholder for other report routes */}
-                <Route path="daily" element={<div>Daily Reports Page (WIP)</div>} />
-                <Route path="monthly" element={<div>Monthly Reports Page (WIP)</div>} />
+                <Route path="daily" element={<DailyReportPage />} />
+                <Route path="monthly" element={<MonthlyReportPage />} />
             </Route>
 
             <Route path="admin" element={<ProtectedRoute requiredPermission="canManageUsers"><Outlet/></ProtectedRoute>}>
                  <Route path="users" element={<UserManagementPage />} />
+                 <Route path="settings" element={<AccountSettingsPage />} />
             </Route>
           </Route>
           

@@ -28,6 +28,7 @@ interface DataContextType {
   updateUserRole: (email: string, role: 'admin' | 'user') => void;
   updateUserPermissions: (email: string, permissions: Permissions) => void;
   importStudents: (importedStudents: Student[]) => { newCount: number; updatedCount: number };
+  updateUserPassword: (email: string, oldPass: string, newPass: string) => { success: boolean; message: string; };
 }
 
 interface ToastContextType {
@@ -132,10 +133,20 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   };
   
   const updateUserRole = (email: string, role: 'admin' | 'user') => {
-     setUsers(prev => prev.map(user =>
-        user.email.toLowerCase() === email.toLowerCase() ?
-        { ...user, role: role, permissions: role === 'admin' ? adminPermissions : defaultUserPermissions } : user
+    const userToUpdate = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (userToUpdate && userToUpdate.role === 'admin' && role === 'user') {
+      const adminCount = users.filter(u => u.role === 'admin').length;
+      if (adminCount <= 1) {
+        addToast("Cannot demote the last remaining admin.", ToastType.Error);
+        return; 
+      }
+    }
+
+    setUsers(prev => prev.map(user =>
+       user.email.toLowerCase() === email.toLowerCase() ?
+       { ...user, role: role, permissions: role === 'admin' ? adminPermissions : defaultUserPermissions } : user
     ));
+    addToast(`User role for ${email} updated to ${role}.`, ToastType.Success);
   };
   
   const updateUserPermissions = (email: string, permissions: Permissions) => {
@@ -146,6 +157,27 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     if (loggedInUser && loggedInUser.email === email) {
         setLoggedInUser(prev => (prev ? { ...prev, permissions } : prev));
     }
+  };
+
+  const updateUserPassword = (email: string, oldPass: string, newPass: string): { success: boolean; message: string; } => {
+    const userToUpdate = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+    if (!userToUpdate) {
+        return { success: false, message: "User not found." };
+    }
+
+    if (userToUpdate.password !== oldPass) {
+        return { success: false, message: "Incorrect current password." };
+    }
+
+    const updatedUsers = users.map(u => u.email.toLowerCase() === email.toLowerCase() ? { ...u, password: newPass } : u);
+    setUsers(updatedUsers);
+
+    if (loggedInUser && loggedInUser.email.toLowerCase() === email.toLowerCase()) {
+        setLoggedInUser({ ...loggedInUser, password: newPass });
+    }
+
+    return { success: true, message: "Password updated successfully." };
   };
 
   const importStudents = (importedStudentsArray: Student[]) => {
@@ -160,12 +192,20 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
                 // Merge logic (simplified): Overwrite with imported data
                 updatedStudentsMap.set(importedStudent.rollNumber.toLowerCase(), {
                     ...existingStudent,
-                    ...importedStudent,
-                    // More sophisticated merging could happen here
+                    name: importedStudent.name,
+                    class: importedStudent.class,
+                    grade: importedStudent.grade,
+                    totalFees: importedStudent.totalFees,
+                    // Note: This simple import doesn't merge payments/discounts
                 });
                 updatedCount++;
             } else {
-                updatedStudentsMap.set(importedStudent.rollNumber.toLowerCase(), importedStudent);
+                updatedStudentsMap.set(importedStudent.rollNumber.toLowerCase(), {
+                  ...importedStudent,
+                  id: `S${Date.now()}${Math.random().toString(36).substring(2, 9)}`,
+                  payments: [],
+                  discounts: []
+                });
                 newCount++;
             }
         });
@@ -177,7 +217,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   // --- CONTEXT VALUES ---
   const authContextValue: AuthContextType = { loggedInUser, login, logout };
-  const dataContextValue: DataContextType = { students, setStudents, users, setUsers, addStudent, updateStudent, deleteStudent, addPayment, addDiscount, updateDiscount, deleteDiscount, addUser, deleteUser, updateUserRole, updateUserPermissions, importStudents };
+  const dataContextValue: DataContextType = { students, setStudents, users, setUsers, addStudent, updateStudent, deleteStudent, addPayment, addDiscount, updateDiscount, deleteDiscount, addUser, deleteUser, updateUserRole, updateUserPermissions, importStudents, updateUserPassword };
   const toastContextValue: ToastContextType = { addToast, toasts, removeToast };
 
   return (
