@@ -70,14 +70,18 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   };
   
   // --- TOAST LOGIC ---
-  const addToast = (message: string, type: ToastType = ToastType.Info) => {
-    const id = Date.now();
-    setToasts(prev => [...prev, { id, message, type }]);
-  };
-  
   const removeToast = (id: number) => {
     setToasts(prev => prev.filter(toast => toast.id !== id));
   };
+  
+  const addToast = (message: string, type: ToastType = ToastType.Info) => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, message, type }]);
+    setTimeout(() => {
+        removeToast(id);
+    }, 2000); // Auto-dismiss after 2 seconds
+  };
+  
 
   // --- DATA LOGIC (STUDENTS & USERS) ---
 
@@ -187,20 +191,22 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         const updatedStudentsMap = new Map(prevStudents.map(s => [s.rollNumber.toLowerCase(), { ...s }]));
 
         importedStudentsArray.forEach(importedStudent => {
-            const existingStudent = updatedStudentsMap.get(importedStudent.rollNumber.toLowerCase());
+            const rollNumberKey = String(importedStudent.rollNumber || '').toLowerCase();
+            if (!rollNumberKey) return; // Skip if roll number is empty
+
+            const existingStudent = updatedStudentsMap.get(rollNumberKey);
             if (existingStudent) {
                 // Merge logic (simplified): Overwrite with imported data
-                updatedStudentsMap.set(importedStudent.rollNumber.toLowerCase(), {
+                updatedStudentsMap.set(rollNumberKey, {
                     ...existingStudent,
                     name: importedStudent.name,
                     class: importedStudent.class,
                     grade: importedStudent.grade,
                     totalFees: importedStudent.totalFees,
-                    // Note: This simple import doesn't merge payments/discounts
                 });
                 updatedCount++;
             } else {
-                updatedStudentsMap.set(importedStudent.rollNumber.toLowerCase(), {
+                updatedStudentsMap.set(rollNumberKey, {
                   ...importedStudent,
                   id: `S${Date.now()}${Math.random().toString(36).substring(2, 9)}`,
                   payments: [],

@@ -15,6 +15,7 @@ import { AccountSettingsPage } from './pages/AccountSettingsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { ToastContainer } from './components/ToastContainer';
 import { StudentEditPage } from './pages/StudentEditPage';
+import { PermissionsModal } from './components/PermissionsModal';
 
 const App = () => {
   return (

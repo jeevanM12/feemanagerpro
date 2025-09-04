@@ -93,7 +93,7 @@ export const ReportsPage = () => {
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 {reportsData.summaryCards.map((card, i) => (
-                    <div key={i} className="bg-white p-6 rounded-xl shadow-lg">
+                    <div key={i} className="bg-white p-6 rounded-xl shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.03]">
                         <p className="text-sm font-medium text-slate-500">{card.title}</p>
                         <p className={`text-3xl font-bold mt-1 ${card.isWarning ? 'text-red-600' : 'text-slate-800'}`}>
                            {card.value.toLocaleString('en-IN', { style: card.isCurrency ? 'currency' : 'decimal', currency: 'INR', maximumFractionDigits: 0 })}

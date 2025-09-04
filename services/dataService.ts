@@ -157,3 +157,108 @@ export const exportReportToPdf = (summaryCards: any[], summaryData: any[], class
         return { success: false, error: errorMessage };
     }
 };
+
+// --- NEW DAILY/MONTHLY EXPORT FUNCTIONS ---
+
+export const exportDailyReportToExcel = (transactions: any[], date: string) => {
+    try {
+        const dataToExport = transactions.map(t => ({
+            'Student Name': t.studentName,
+            'Roll Number': t.rollNumber,
+            'Transaction Type': t.type,
+            'Details': t.details,
+            'Amount (INR)': t.amount,
+            'Date': formatDateTime(t.date),
+        }));
+        return exportToExcel(dataToExport, `daily_report_${date}`);
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+        return { success: false, error: errorMessage };
+    }
+};
+
+export const exportDailyReportToPdf = (transactions: any[], date: string, summary: { totalCollected: number, totalDiscounted: number }) => {
+    try {
+        const doc = new jsPDF();
+        const formattedDate = new Date(date).toLocaleDateString('en-GB');
+        doc.text(`Daily Financial Report for ${formattedDate}`, 14, 16);
+        
+        (doc as any).autoTable({
+            body: [
+                ['Total Collected', `INR ${summary.totalCollected.toLocaleString()}`],
+                ['Total Discounted', `INR ${summary.totalDiscounted.toLocaleString()}`],
+            ],
+            startY: 22,
+            theme: 'striped',
+        });
+        
+        const tableColumn = ["Student Name", "Roll No.", "Type", "Details", "Amount"];
+        const tableRows = transactions.map(t => [t.studentName, t.rollNumber, t.type, t.details, `INR ${t.amount.toLocaleString()}`]);
+
+        (doc as any).autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: (doc as any).lastAutoTable.finalY + 10,
+            theme: 'grid',
+        });
+
+        doc.save(`daily_report_${date}.pdf`);
+        return { success: true };
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+        return { success: false, error: errorMessage };
+    }
+};
+
+export const exportMonthlyReportToExcel = (dailyData: any[], monthYear: string, summary: { totalCollected: number, totalDiscounted: number }) => {
+    try {
+        const summaryData = [
+            { Metric: 'Total Collected', Amount: summary.totalCollected },
+            { Metric: 'Total Discounted', Amount: summary.totalDiscounted }
+        ];
+        const dailyExportData = dailyData.map(d => ({ 'Day': d.day, 'Amount Collected (INR)': d.collected }));
+
+        const summarySheet = XLSX.utils.json_to_sheet(summaryData);
+        const dailySheet = XLSX.utils.json_to_sheet(dailyExportData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, summarySheet, 'Monthly Summary');
+        XLSX.utils.book_append_sheet(workbook, dailySheet, 'Daily Collections');
+        XLSX.writeFile(workbook, `monthly_report_${monthYear}.xlsx`);
+        return { success: true };
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+        return { success: false, error: errorMessage };
+    }
+};
+
+export const exportMonthlyReportToPdf = (dailyData: any[], monthYear: string, summary: { totalCollected: number, totalDiscounted: number }) => {
+     try {
+        const doc = new jsPDF();
+        doc.text(`Monthly Financial Report for ${monthYear}`, 14, 16);
+
+        (doc as any).autoTable({
+            body: [
+                ['Total Collected', `INR ${summary.totalCollected.toLocaleString()}`],
+                ['Total Discounted', `INR ${summary.totalDiscounted.toLocaleString()}`],
+            ],
+            startY: 22,
+            theme: 'striped',
+        });
+        
+        const tableColumn = ["Day of Month", "Amount Collected (INR)"];
+        const tableRows = dailyData.filter(d => d.collected > 0).map(d => [d.day, `INR ${d.collected.toLocaleString()}`]);
+
+        (doc as any).autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: (doc as any).lastAutoTable.finalY + 10,
+            theme: 'grid',
+        });
+        
+        doc.save(`monthly_report_${monthYear}.pdf`);
+        return { success: true };
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+        return { success: false, error: errorMessage };
+    }
+};

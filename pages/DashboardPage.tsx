@@ -6,10 +6,11 @@ import { StudentWithFeeDetails, Student, ToastType } from '../types';
 import { prepareStudentListForExport, exportToExcel, exportToPdf } from '../services/dataService';
 import { Eye, Edit3, Trash2, PlusCircle, UploadCloud, Download, Search, X, ChevronUp, ChevronDown, ListFilter, BarChart3, Users, DollarSign, FileText, Tag, FileDown, BookCopy } from 'lucide-react';
 import { ConfirmationModal } from '../components/ConfirmationModal';
+import { EmptyState } from '../components/EmptyState';
 import * as XLSX from 'xlsx';
 
 const SummaryCard = ({ title, value, icon, isCurrency = false, isWarning = false }: { title: string, value: number, icon: React.ReactNode, isCurrency?: boolean, isWarning?: boolean }) => (
-    <div className="bg-white p-6 rounded-xl shadow-lg flex items-center gap-4">
+    <div className="bg-white p-6 rounded-xl shadow-lg flex items-center gap-4 transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.03]">
         <div className={`p-3 rounded-full ${isWarning ? 'bg-red-100 text-red-600' : 'bg-indigo-100 text-indigo-600'}`}>
             {icon}
         </div>
@@ -126,7 +127,7 @@ export const DashboardPage = () => {
 
             const importedStudentsList: Student[] = json.map((row: any): Partial<Student> => ({
                 name: row['Name'],
-                rollNumber: row['Roll Number'] || row['RollNo'],
+                rollNumber: String(row['Roll Number'] || row['RollNo'] || ''),
                 class: String(row['Class'] || ''),
                 grade: String(row['Grade'] || ''),
                 totalFees: parseFloat(row['Total Fees']),
@@ -162,6 +163,25 @@ export const DashboardPage = () => {
       setIsConfirmModalOpen(false);
       setStudentToDelete(null);
   };
+  
+  if (students.length === 0) {
+      return (
+          <div className="container mx-auto p-4 sm:p-6 lg:p-8">
+               <EmptyState
+                  icon={<Users size={48} className="text-indigo-600" />}
+                  title="No Student Records Found"
+                  message="It looks like you haven't added any students yet. Get started by adding your first student record."
+                  actionButton={
+                      loggedInUser?.permissions.canAddStudents ? (
+                          <button onClick={() => navigate('/student/new')} className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md flex items-center transition duration-200 ease-in-out transform hover:-translate-y-0.5 text-base">
+                              <PlusCircle size={22} className="mr-2" /> Add Your First Student
+                          </button>
+                      ) : null
+                  }
+               />
+          </div>
+      );
+  }
 
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
@@ -256,7 +276,7 @@ export const DashboardPage = () => {
                     </tr>
                     ))
                 ) : (
-                    <tr><td colSpan={6} className="px-6 py-4 text-center text-slate-500">No students found.</td></tr>
+                    <tr><td colSpan={6} className="px-6 py-4 text-center text-slate-500">No students found for the current filters.</td></tr>
                 )}
                 </tbody>
             </table>

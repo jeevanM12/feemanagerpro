@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useData, useAuth, useToast } from '../contexts/AppContext';
-import { User, ToastType } from '../types';
-import { UserCog, Users, UserPlus, Trash2, KeyRound } from 'lucide-react';
+import { User, ToastType, Permissions } from '../types';
+import { UserCog, Users, UserPlus, Trash2, KeyRound, SlidersHorizontal } from 'lucide-react';
 import { ConfirmationModal } from '../components/ConfirmationModal';
+import { PermissionsModal } from '../components/PermissionsModal';
 
 export const UserManagementPage = () => {
-    const { users, addUser, deleteUser, updateUserRole } = useData();
+    const { users, addUser, deleteUser, updateUserRole, updateUserPermissions } = useData();
     const { loggedInUser } = useAuth();
     const { addToast } = useToast();
 
@@ -14,6 +15,8 @@ export const UserManagementPage = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     
     const [userToDelete, setUserToDelete] = useState<User | null>(null);
+    const [isPermissionsModalOpen, setIsPermissionsModalOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
     const handleAddUserSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -45,6 +48,19 @@ export const UserManagementPage = () => {
         }
         setUserToDelete(null);
     };
+
+    const openPermissionsModal = (user: User) => {
+        setSelectedUser(user);
+        setIsPermissionsModalOpen(true);
+    };
+
+    const handleSavePermissions = (email: string, permissions: Permissions) => {
+        updateUserPermissions(email, permissions);
+        addToast(`Permissions for ${email} updated successfully.`, ToastType.Success);
+        setIsPermissionsModalOpen(false);
+        setSelectedUser(null);
+    };
+
 
     return (
       <div className="container mx-auto p-4 sm:p-6 lg:p-8">
@@ -90,10 +106,17 @@ export const UserManagementPage = () => {
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-800">{user.email}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-700"><span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.role === 'admin' ? 'bg-indigo-100 text-indigo-800' : 'bg-slate-100 text-slate-800'}`}>{user.role}</span></td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div className="flex space-x-2">
+                                <div className="flex items-center space-x-4">
                                     {user.email !== loggedInUser?.email && (
                                         <>
                                             <button onClick={() => updateUserRole(user.email, user.role === 'admin' ? 'user' : 'admin')} className="text-indigo-600 hover:text-indigo-900" title={`Change to ${user.role === 'admin' ? 'user' : 'admin'}`}><KeyRound size={20} /></button>
+                                            
+                                            {user.role === 'user' && (
+                                                <button onClick={() => openPermissionsModal(user)} className="text-sky-600 hover:text-sky-900" title="Manage Permissions">
+                                                    <SlidersHorizontal size={20} />
+                                                </button>
+                                            )}
+
                                             <button onClick={() => setUserToDelete(user)} className="text-red-600 hover:text-red-900" title="Delete user"><Trash2 size={20} /></button>
                                         </>
                                     )}
@@ -111,6 +134,12 @@ export const UserManagementPage = () => {
             onConfirm={handleDeleteUser}
             title="Confirm User Deletion"
             message={`Are you sure you want to delete the user ${userToDelete?.email}? This action cannot be undone.`}
+        />
+        <PermissionsModal
+            isOpen={isPermissionsModalOpen}
+            onClose={() => { setIsPermissionsModalOpen(false); setSelectedUser(null); }}
+            onSave={handleSavePermissions}
+            user={selectedUser}
         />
       </div>
     );
