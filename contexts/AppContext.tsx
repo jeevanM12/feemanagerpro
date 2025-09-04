@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
-import { User, Student, Permissions, ToastMessage, ToastType } from '../types';
-import { initialUsers, initialStudentsData, adminPermissions, defaultUserPermissions, LOCAL_STORAGE_KEYS } from '../constants';
+import { useLocalStorage } from '../hooks/useLocalStorage.ts';
+import { User, Student, Permissions, ToastMessage, ToastType } from '../types.ts';
+import { initialUsers, initialStudentsData, adminPermissions, defaultUserPermissions, LOCAL_STORAGE_KEYS } from '../constants.ts';
 
 // --- CONTEXT TYPE DEFINITIONS ---
 

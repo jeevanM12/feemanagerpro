@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AppContext';
-import { APP_NAME } from '../constants';
+import { useAuth } from '../contexts/AppContext.tsx';
+import { APP_NAME } from '../constants.ts';
 import { ChevronDown, LogOut, BarChart3, CalendarDays, UserCog, Settings } from 'lucide-react';
 
 const Navbar = () => {

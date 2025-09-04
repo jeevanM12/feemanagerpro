@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Permissions } from '../types';
+import { User, Permissions } from '../types.ts';
 import { X, Save } from 'lucide-react';
 
 interface PermissionsModalProps {

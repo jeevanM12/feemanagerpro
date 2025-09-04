@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { useData, useToast } from '../contexts/AppContext';
-import { formatISODateToYMD, formatDateTime } from '../utils';
+import { useData, useToast } from '../contexts/AppContext.tsx';
+import { formatISODateToYMD, formatDateTime } from '../utils.ts';
 import { Link } from 'react-router-dom';
 import { Download, FileDown, Calendar, DollarSign, Tag, Search } from 'lucide-react';
-import { exportDailyReportToExcel, exportDailyReportToPdf } from '../services/dataService';
-import { ToastType } from '../types';
+import { exportDailyReportToExcel, exportDailyReportToPdf } from '../services/dataService.ts';
+import { ToastType } from '../types.ts';
 
 interface DailyTransaction {
     studentName: string;

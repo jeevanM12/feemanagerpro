@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useData, useAuth } from '../contexts/AppContext';
-import { Student } from '../types';
-import { calculateFeeDetails, formatDateTime } from '../utils';
+import { useData, useAuth } from '../contexts/AppContext.tsx';
+import { Student } from '../types.ts';
+import { calculateFeeDetails, formatDateTime } from '../utils.ts';
 import { ChevronLeft, PlusCircle, Tag, FileText } from 'lucide-react';
-import { AddPaymentModal } from '../components/AddPaymentModal';
-import { AddDiscountModal } from '../components/AddDiscountModal';
+import { AddPaymentModal } from '../components/AddPaymentModal.tsx';
+import { AddDiscountModal } from '../components/AddDiscountModal.tsx';
 
 export const StudentDetailPage = () => {
     const { id } = useParams<{ id: string }>();

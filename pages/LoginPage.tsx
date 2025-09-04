@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AppContext';
-import { APP_NAME } from '../constants';
+import { useAuth } from '../contexts/AppContext.tsx';
+import { APP_NAME } from '../constants.ts';
 import { Eye, EyeOff } from 'lucide-react';
 
 export const LoginPage = () => {

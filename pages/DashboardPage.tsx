@@ -1,12 +1,12 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useData, useAuth, useToast } from '../contexts/AppContext';
-import { calculateFeeDetails } from '../utils';
-import { StudentWithFeeDetails, Student, ToastType } from '../types';
-import { prepareStudentListForExport, exportToExcel, exportToPdf } from '../services/dataService';
+import { useData, useAuth, useToast } from '../contexts/AppContext.tsx';
+import { calculateFeeDetails } from '../utils.ts';
+import { StudentWithFeeDetails, Student, ToastType } from '../types.ts';
+import { prepareStudentListForExport, exportToExcel, exportToPdf } from '../services/dataService.ts';
 import { Eye, Edit3, Trash2, PlusCircle, UploadCloud, Download, Search, X, ChevronUp, ChevronDown, ListFilter, BarChart3, Users, DollarSign, FileText, Tag, FileDown, BookCopy } from 'lucide-react';
-import { ConfirmationModal } from '../components/ConfirmationModal';
-import { EmptyState } from '../components/EmptyState';
+import { ConfirmationModal } from '../components/ConfirmationModal.tsx';
+import { EmptyState } from '../components/EmptyState.tsx';
 import * as XLSX from 'xlsx';
 
 const SummaryCard = ({ title, value, icon, isCurrency = false, isWarning = false }: { title: string, value: number, icon: React.ReactNode, isCurrency?: boolean, isWarning?: boolean }) => (

@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
-import { useData, useToast } from '../contexts/AppContext';
-import { calculateFeeDetails } from '../utils';
+import { useData, useToast } from '../contexts/AppContext.tsx';
+import { calculateFeeDetails } from '../utils.ts';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Download, FileDown } from 'lucide-react';
-import { exportReportToExcel, exportReportToPdf } from '../services/dataService';
-import { ToastType } from '../types';
+import { exportReportToExcel, exportReportToPdf } from '../services/dataService.ts';
+import { ToastType } from '../types.ts';
 
 const COLORS = ['#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#6366f1', '#14b8a6'];
 const BAR_COLOR = '#f59e0b'; // amber-500

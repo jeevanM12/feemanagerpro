@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useData, useToast } from '../contexts/AppContext';
-import { Student, ToastType } from '../types';
-import { formatISODateToYMD } from '../utils';
+import { useData, useToast } from '../contexts/AppContext.tsx';
+import { Student, ToastType } from '../types.ts';
+import { formatISODateToYMD } from '../utils.ts';
 
 export const AddDiscountModal = ({ student, onClose }: { student: Student, onClose: () => void }) => {
     const { addDiscount } = useData();

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../contexts/AppContext';
-import { Permissions } from '../types';
+import { useAuth } from '../contexts/AppContext.tsx';
+import { Permissions } from '../types.ts';
 
 interface ProtectedRouteProps {
   children?: React.ReactElement;

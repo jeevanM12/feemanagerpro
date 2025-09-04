@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useAuth, useData, useToast } from '../contexts/AppContext';
+import { useAuth, useData, useToast } from '../contexts/AppContext.tsx';
 import { KeyRound, ShieldCheck, Lock } from 'lucide-react';
-import { ToastType } from '../types';
+import { ToastType } from '../types.ts';
 
 export const AccountSettingsPage = () => {
     const { loggedInUser } = useAuth();

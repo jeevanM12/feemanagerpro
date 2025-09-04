@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useData, useAuth, useToast } from '../contexts/AppContext';
-import { User, ToastType, Permissions } from '../types';
+import { useData, useAuth, useToast } from '../contexts/AppContext.tsx';
+import { User, ToastType, Permissions } from '../types.ts';
 import { UserCog, Users, UserPlus, Trash2, KeyRound, SlidersHorizontal } from 'lucide-react';
-import { ConfirmationModal } from '../components/ConfirmationModal';
-import { PermissionsModal } from '../components/PermissionsModal';
+import { ConfirmationModal } from '../components/ConfirmationModal.tsx';
+import { PermissionsModal } from '../components/PermissionsModal.tsx';
 
 export const UserManagementPage = () => {
     const { users, addUser, deleteUser, updateUserRole, updateUserPermissions } = useData();

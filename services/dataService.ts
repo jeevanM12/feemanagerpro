@@ -1,5 +1,5 @@
-import { Student, StudentWithFeeDetails } from '../types';
-import { formatDateTime, calculateFeeDetails } from '../utils';
+import { Student, StudentWithFeeDetails } from '../types.ts';
+import { formatDateTime, calculateFeeDetails } from '../utils.ts';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import * as XLSX from 'xlsx';

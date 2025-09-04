@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useData, useToast } from '../contexts/AppContext';
-import { Student, ToastType } from '../types';
+import { useData, useToast } from '../contexts/AppContext.tsx';
+import { Student, ToastType } from '../types.ts';
 import { ChevronLeft, Save } from 'lucide-react';
 
 export const StudentEditPage = () => {
