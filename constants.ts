@@ -1,4 +1,4 @@
-import { Permissions, User, Student } from './types.ts';
+import { Permissions, User, Student } from './types';
 
 export const defaultUserPermissions: Permissions = {
   canViewStudents: true,
