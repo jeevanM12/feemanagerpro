@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useData, useToast } from '../contexts/AppContext.tsx';
-import { ToastType } from '../types.ts';
+import { useData, useToast } from '../contexts/AppContext';
+import { ToastType } from '../types';
 import { ChevronLeft, UserPlus } from 'lucide-react';
 
 export const StudentAddPage = () => {
@@ -10,7 +10,7 @@ export const StudentAddPage = () => {
   const { addToast } = useToast();
 
   const [name, setName] = useState('');
-  const [rollNumber, setRollNumber] =useState('');
+  const [rollNumber, setRollNumber] = useState('');
   const [className, setClassName] = useState('');
   const [grade, setGrade] = useState('');
   const [totalFees, setTotalFees] = useState('');
@@ -58,23 +58,23 @@ export const StudentAddPage = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                     <label className="block text-slate-600 text-sm font-bold mb-2" htmlFor="rollNumber">Roll Number</label>
-                    <input type="text" id="rollNumber" value={rollNumber} onChange={(e) => setRollNumber(e.target.value)} className="shadow appearance-none border border-slate-600 bg-slate-700 text-white rounded w-full py-2 px-3 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
+                    <input type="text" id="rollNumber" value={rollNumber} onChange={(e) => setRollNumber(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
                 </div>
                  <div>
                     <label className="block text-slate-600 text-sm font-bold mb-2" htmlFor="name">Full Name</label>
-                    <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} className="shadow appearance-none border border-slate-600 bg-slate-700 text-white rounded w-full py-2 px-3 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
+                    <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
                 </div>
                  <div>
                     <label className="block text-slate-600 text-sm font-bold mb-2" htmlFor="class">Class</label>
-                    <input type="text" id="class" value={className} onChange={(e) => setClassName(e.target.value)} className="shadow appearance-none border border-slate-600 bg-slate-700 text-white rounded w-full py-2 px-3 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
+                    <input type="text" id="class" value={className} onChange={(e) => setClassName(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
                 </div>
                  <div>
                     <label className="block text-slate-600 text-sm font-bold mb-2" htmlFor="grade">Grade</label>
-                    <input type="text" id="grade" value={grade} onChange={(e) => setGrade(e.target.value)} className="shadow appearance-none border border-slate-600 bg-slate-700 text-white rounded w-full py-2 px-3 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
+                    <input type="text" id="grade" value={grade} onChange={(e) => setGrade(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
                 </div>
                  <div>
                     <label className="block text-slate-600 text-sm font-bold mb-2" htmlFor="totalFees">Total Fees (INR)</label>
-                    <input type="number" id="totalFees" value={totalFees} onChange={(e) => setTotalFees(e.target.value)} className="shadow appearance-none border border-slate-600 bg-slate-700 text-white rounded w-full py-2 px-3 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" required min="1" />
+                    <input type="number" id="totalFees" value={totalFees} onChange={(e) => setTotalFees(e.target.value)} className="shadow appearance-none border rounded w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" required min="1" />
                 </div>
                 <div className="flex justify-end pt-4">
                     <button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg flex items-center transition duration-150">
