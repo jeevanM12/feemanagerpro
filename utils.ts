@@ -1,4 +1,4 @@
-import { Student } from './types.ts';
+import { Student } from './types';
 
 export const formatDateTime = (isoString?: string): string => {
   if (!isoString) return 'N/A';
