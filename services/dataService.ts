@@ -1,7 +1,7 @@
 import { Student, StudentWithFeeDetails } from '../types.ts';
 import { formatDateTime, calculateFeeDetails } from '../utils.ts';
 import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 
 export const exportToExcel = (data: any[], filename: string, sheetname: string = 'Sheet1') => {
@@ -78,7 +78,7 @@ export const exportToPdf = (data: StudentWithFeeDetails[], filename: string) => 
             tableRows.push(studentData);
         });
 
-        autoTable(doc, {
+        (doc as any).autoTable({
             head: [tableColumn],
             body: tableRows,
             startY: 30,
@@ -120,7 +120,7 @@ export const exportReportToPdf = (summaryCards: any[], summaryData: any[], class
         doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 22);
 
         // Summary Cards as a table
-        autoTable(doc, {
+        (doc as any).autoTable({
             head: [['Metric', 'Value']],
             body: summaryCards.map(c => [c.title, c.isCurrency ? `INR ${c.value.toLocaleString()}` : c.value.toLocaleString()]),
             startY: 30,
@@ -130,7 +130,7 @@ export const exportReportToPdf = (summaryCards: any[], summaryData: any[], class
 
         // Financial Overview table
         doc.text("Financial Overview Breakdown", 14, firstTableHeight + 15);
-        autoTable(doc, {
+        (doc as any).autoTable({
             head: [['Category', 'Amount']],
             body: summaryData.map(d => [d.name, `INR ${d.value.toLocaleString()}`]),
             startY: firstTableHeight + 20,
@@ -141,7 +141,7 @@ export const exportReportToPdf = (summaryCards: any[], summaryData: any[], class
 
         // Class-wise Pending table
         doc.text("Pending Fees by Class", 14, secondTableHeight + 15);
-        autoTable(doc, {
+        (doc as any).autoTable({
             head: [['Class', 'Pending Amount']],
             body: classData.map(d => [d.name, `INR ${d.pending.toLocaleString()}`]),
             startY: secondTableHeight + 20,
@@ -183,7 +183,7 @@ export const exportDailyReportToPdf = (transactions: any[], date: string, summar
         const formattedDate = new Date(date).toLocaleDateString('en-GB');
         doc.text(`Daily Financial Report for ${formattedDate}`, 14, 16);
         
-        autoTable(doc, {
+        (doc as any).autoTable({
             body: [
                 ['Total Collected', `INR ${summary.totalCollected.toLocaleString()}`],
                 ['Total Discounted', `INR ${summary.totalDiscounted.toLocaleString()}`],
@@ -195,7 +195,7 @@ export const exportDailyReportToPdf = (transactions: any[], date: string, summar
         const tableColumn = ["Student Name", "Roll No.", "Type", "Details", "Amount"];
         const tableRows = transactions.map(t => [t.studentName, t.rollNumber, t.type, t.details, `INR ${t.amount.toLocaleString()}`]);
 
-        autoTable(doc, {
+        (doc as any).autoTable({
             head: [tableColumn],
             body: tableRows,
             startY: (doc as any).lastAutoTable.finalY + 10,
@@ -236,7 +236,7 @@ export const exportMonthlyReportToPdf = (dailyData: any[], monthYear: string, su
         const doc = new jsPDF();
         doc.text(`Monthly Financial Report for ${monthYear}`, 14, 16);
 
-        autoTable(doc, {
+        (doc as any).autoTable({
             body: [
                 ['Total Collected', `INR ${summary.totalCollected.toLocaleString()}`],
                 ['Total Discounted', `INR ${summary.totalDiscounted.toLocaleString()}`],
@@ -248,7 +248,7 @@ export const exportMonthlyReportToPdf = (dailyData: any[], monthYear: string, su
         const tableColumn = ["Day of Month", "Amount Collected (INR)"];
         const tableRows = dailyData.filter(d => d.collected > 0).map(d => [d.day, `INR ${d.collected.toLocaleString()}`]);
 
-        autoTable(doc, {
+        (doc as any).autoTable({
             head: [tableColumn],
             body: tableRows,
             startY: (doc as any).lastAutoTable.finalY + 10,
