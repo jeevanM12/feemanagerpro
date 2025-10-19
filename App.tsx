@@ -1,20 +1,21 @@
 import React from 'react';
 import { HashRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import { AppProvider } from './contexts/AppContext';
-import { MainLayout } from './components/MainLayout';
-import { ProtectedRoute } from './pages/ProtectedRoute';
-import { LoginPage } from './pages/LoginPage';
-import { DashboardPage } from './pages/DashboardPage';
-import { StudentDetailPage } from './pages/StudentDetailPage';
-import { StudentAddPage } from './pages/StudentAddPage';
-import { ReportsPage } from './pages/ReportsPage';
-import { DailyReportPage } from './pages/DailyReportPage';
-import { MonthlyReportPage } from './pages/MonthlyReportPage';
-import { UserManagementPage } from './pages/UserManagementPage';
-import { AccountSettingsPage } from './pages/AccountSettingsPage';
-import { NotFoundPage } from './pages/NotFoundPage';
-import { ToastContainer } from './components/ToastContainer';
-import { StudentEditPage } from './pages/StudentEditPage';
+import { AppProvider } from './contexts/AppContext.tsx';
+import { MainLayout } from './components/MainLayout.tsx';
+import { ProtectedRoute } from './pages/ProtectedRoute.tsx';
+import { LoginPage } from './pages/LoginPage.tsx';
+import { DashboardPage } from './pages/DashboardPage.tsx';
+import { StudentDetailPage } from './pages/StudentDetailPage.tsx';
+import { StudentAddPage } from './pages/StudentAddPage.tsx';
+import { ReportsPage } from './pages/ReportsPage.tsx';
+import { DailyReportPage } from './pages/DailyReportPage.tsx';
+import { MonthlyReportPage } from './pages/MonthlyReportPage.tsx';
+import { UserManagementPage } from './pages/UserManagementPage.tsx';
+import { AccountSettingsPage } from './pages/AccountSettingsPage.tsx';
+import { NotFoundPage } from './pages/NotFoundPage.tsx';
+import { ToastContainer } from './components/ToastContainer.tsx';
+import { StudentEditPage } from './pages/StudentEditPage.tsx';
+import { PermissionsModal } from './components/PermissionsModal.tsx';
 
 const App = () => {
   return (
@@ -31,13 +32,13 @@ const App = () => {
             <Route path="student/:id/edit" element={<ProtectedRoute requiredPermission="canEditStudents"><StudentEditPage /></ProtectedRoute>} />
             
             <Route path="reports" element={<ProtectedRoute requiredPermission="canViewReports"><Outlet/></ProtectedRoute>}>
-                <Route index element={<ReportsPage />} />
+                <Route path="summary" element={<ReportsPage />} />
                 <Route path="daily" element={<DailyReportPage />} />
                 <Route path="monthly" element={<MonthlyReportPage />} />
             </Route>
 
             <Route path="admin" element={<ProtectedRoute requiredPermission="canManageUsers"><Outlet/></ProtectedRoute>}>
-                 <Route index element={<UserManagementPage />} />
+                 <Route path="users" element={<UserManagementPage />} />
                  <Route path="settings" element={<AccountSettingsPage />} />
             </Route>
           </Route>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useData, useToast } from '../contexts/AppContext';
-import { ToastType } from '../types';
+import { useData, useToast } from '../contexts/AppContext.tsx';
+import { ToastType } from '../types.ts';
 import { ChevronLeft, UserPlus } from 'lucide-react';
 
 export const StudentAddPage = () => {
@@ -10,7 +10,7 @@ export const StudentAddPage = () => {
   const { addToast } = useToast();
 
   const [name, setName] = useState('');
-  const [rollNumber, setRollNumber] = useState('');
+  const [rollNumber, setRollNumber] =useState('');
   const [className, setClassName] = useState('');
   const [grade, setGrade] = useState('');
   const [totalFees, setTotalFees] = useState('');

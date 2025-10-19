@@ -1,13 +1,13 @@
-import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
-import { User, Student, Permissions, ToastMessage, ToastType } from '../types';
-import { initialUsers, initialStudentsData, adminPermissions, defaultUserPermissions, LOCAL_STORAGE_KEYS } from '../constants';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { useLocalStorage } from '../hooks/useLocalStorage.ts';
+import { User, Student, Permissions, ToastMessage, ToastType } from '../types.ts';
+import { initialUsers, initialStudentsData, adminPermissions, defaultUserPermissions, LOCAL_STORAGE_KEYS } from '../constants.ts';
 
 // --- CONTEXT TYPE DEFINITIONS ---
 
 interface AuthContextType {
   loggedInUser: User | null;
-  login: (email: string, password:string) => boolean;
+  login: (email: string, password: string) => boolean;
   logout: () => void;
 }
 
@@ -27,7 +27,7 @@ interface DataContextType {
   deleteUser: (email: string) => void;
   updateUserRole: (email: string, role: 'admin' | 'user') => void;
   updateUserPermissions: (email: string, permissions: Permissions) => void;
-  importStudents: (importedStudents: Partial<Student>[]) => { newCount: number; updatedCount: number };
+  importStudents: (importedStudents: Student[]) => { newCount: number; updatedCount: number };
   updateUserPassword: (email: string, oldPass: string, newPass: string) => { success: boolean; message: string; };
 }
 
@@ -53,20 +53,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [loggedInUser, setLoggedInUser] = useLocalStorage<User | null>(LOCAL_STORAGE_KEYS.LOGGED_IN_USER, null);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
-  // --- TOAST LOGIC ---
-  const removeToast = useCallback((id: number) => {
-    setToasts(prev => prev.filter(toast => toast.id !== id));
-  }, []);
-  
-  const addToast = useCallback((message: string, type: ToastType = ToastType.Info) => {
-    const id = Date.now();
-    setToasts(prev => [...prev, { id, message, type }]);
-    setTimeout(() => {
-        removeToast(id);
-    }, 3000); // Auto-dismiss after 3 seconds
-  }, [removeToast]);
-  
-
   // --- AUTH LOGIC ---
   const login = (email: string, password: string): boolean => {
     const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
@@ -83,6 +69,20 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     addToast('You have been logged out.', ToastType.Info);
   };
   
+  // --- TOAST LOGIC ---
+  const removeToast = (id: number) => {
+    setToasts(prev => prev.filter(toast => toast.id !== id));
+  };
+  
+  const addToast = (message: string, type: ToastType = ToastType.Info) => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, message, type }]);
+    setTimeout(() => {
+        removeToast(id);
+    }, 2000); // Auto-dismiss after 2 seconds
+  };
+  
+
   // --- DATA LOGIC (STUDENTS & USERS) ---
 
   const addStudent = (newStudent: Omit<Student, 'id' | 'payments' | 'discounts'>) => {
@@ -184,7 +184,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     return { success: true, message: "Password updated successfully." };
   };
 
-  const importStudents = (importedStudentsArray: Partial<Student>[]) => {
+  const importStudents = (importedStudentsArray: Student[]) => {
     let newCount = 0;
     let updatedCount = 0;
     setStudents(prevStudents => {
@@ -192,30 +192,26 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
         importedStudentsArray.forEach(importedStudent => {
             const rollNumberKey = String(importedStudent.rollNumber || '').toLowerCase();
-            if (!rollNumberKey || !importedStudent.name || !importedStudent.totalFees) return; // Skip if essential data is missing
+            if (!rollNumberKey) return; // Skip if roll number is empty
 
             const existingStudent = updatedStudentsMap.get(rollNumberKey);
             if (existingStudent) {
-                // Merge logic: Overwrite with imported data
+                // Merge logic (simplified): Overwrite with imported data
                 updatedStudentsMap.set(rollNumberKey, {
                     ...existingStudent,
                     name: importedStudent.name,
-                    class: importedStudent.class || existingStudent.class,
-                    grade: importedStudent.grade || existingStudent.grade,
+                    class: importedStudent.class,
+                    grade: importedStudent.grade,
                     totalFees: importedStudent.totalFees,
                 });
                 updatedCount++;
             } else {
                 updatedStudentsMap.set(rollNumberKey, {
+                  ...importedStudent,
                   id: `S${Date.now()}${Math.random().toString(36).substring(2, 9)}`,
-                  name: importedStudent.name,
-                  rollNumber: importedStudent.rollNumber,
-                  class: importedStudent.class || 'N/A',
-                  grade: importedStudent.grade || 'N/A',
-                  totalFees: importedStudent.totalFees,
                   payments: [],
                   discounts: []
-                } as Student);
+                });
                 newCount++;
             }
         });
@@ -262,7 +258,7 @@ export const useData = () => {
 export const useToast = () => {
     const context = useContext(ToastContext);
     if (context === undefined) {
-        throw new Error('useToast must be used within an AppProvider');
+        throw new Error('useToast must be used within a ToastProvider');
     }
     return context;
 };

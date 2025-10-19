@@ -63,19 +63,19 @@ export const StudentEditPage = () => {
                 </div>
                  <div>
                     <label className="block text-slate-600 text-sm font-bold mb-2" htmlFor="name">Full Name</label>
-                    <input type="text" id="name" name="name" value={studentData.name} onChange={handleChange} className="shadow appearance-none border border-slate-600 bg-slate-700 text-white rounded w-full py-2 px-3 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
+                    <input type="text" id="name" name="name" value={studentData.name} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
                 </div>
                  <div>
                     <label className="block text-slate-600 text-sm font-bold mb-2" htmlFor="class">Class</label>
-                    <input type="text" id="class" name="class" value={studentData.class} onChange={handleChange} className="shadow appearance-none border border-slate-600 bg-slate-700 text-white rounded w-full py-2 px-3 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
+                    <input type="text" id="class" name="class" value={studentData.class} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
                 </div>
                  <div>
                     <label className="block text-slate-600 text-sm font-bold mb-2" htmlFor="grade">Grade</label>
-                    <input type="text" id="grade" name="grade" value={studentData.grade} onChange={handleChange} className="shadow appearance-none border border-slate-600 bg-slate-700 text-white rounded w-full py-2 px-3 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
+                    <input type="text" id="grade" name="grade" value={studentData.grade} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" required />
                 </div>
                  <div>
                     <label className="block text-slate-600 text-sm font-bold mb-2" htmlFor="totalFees">Total Fees (INR)</label>
-                    <input type="number" id="totalFees" name="totalFees" value={studentData.totalFees} onChange={handleChange} className="shadow appearance-none border border-slate-600 bg-slate-700 text-white rounded w-full py-2 px-3 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" required min="1" />
+                    <input type="number" id="totalFees" name="totalFees" value={studentData.totalFees} onChange={handleChange} className="shadow appearance-none border rounded w-full py-2 px-3 text-slate-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" required min="1" />
                 </div>
                 <div className="flex justify-end pt-4">
                     <button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg flex items-center transition duration-150">

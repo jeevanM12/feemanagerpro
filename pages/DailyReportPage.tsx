@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { useData, useToast } from '../contexts/AppContext';
-import { formatISODateToYMD, formatDateTime } from '../utils';
+import { useData, useToast } from '../contexts/AppContext.tsx';
+import { formatISODateToYMD, formatDateTime } from '../utils.ts';
 import { Link } from 'react-router-dom';
 import { Download, FileDown, Calendar, DollarSign, Tag, Search } from 'lucide-react';
-import { exportDailyReportToExcel, exportDailyReportToPdf } from '../services/dataService';
-import { ToastType } from '../types';
+import { exportDailyReportToExcel, exportDailyReportToPdf } from '../services/dataService.ts';
+import { ToastType } from '../types.ts';
 
 interface DailyTransaction {
     studentName: string;
@@ -24,11 +24,16 @@ export const DailyReportPage = () => {
         const transactions: DailyTransaction[] = [];
         let totalCollected = 0;
         let totalDiscounted = 0;
+
+        const targetDate = new Date(selectedDate);
+        targetDate.setHours(0,0,0,0);
         
         students.forEach(student => {
             student.payments.forEach(p => {
-                // Timezone-safe date comparison
-                if (p.date.startsWith(selectedDate)) {
+                const paymentDate = new Date(p.date);
+                if (paymentDate.getFullYear() === targetDate.getFullYear() &&
+                    paymentDate.getMonth() === targetDate.getMonth() &&
+                    paymentDate.getDate() === targetDate.getDate()) {
                     transactions.push({
                         studentName: student.name,
                         rollNumber: student.rollNumber,
@@ -41,8 +46,10 @@ export const DailyReportPage = () => {
                 }
             });
             student.discounts.forEach(d => {
-                // Timezone-safe date comparison
-                if (d.date.startsWith(selectedDate)) {
+                const discountDate = new Date(d.date);
+                 if (discountDate.getFullYear() === targetDate.getFullYear() &&
+                    discountDate.getMonth() === targetDate.getMonth() &&
+                    discountDate.getDate() === targetDate.getDate()) {
                     transactions.push({
                         studentName: student.name,
                         rollNumber: student.rollNumber,
@@ -129,7 +136,7 @@ export const DailyReportPage = () => {
             </div>
             
             <div className="bg-white p-6 rounded-xl shadow-lg">
-                <h3 className="text-xl font-semibold text-slate-800 mb-4">Transactions for {new Date(selectedDate).toLocaleDateString('en-GB', { timeZone: 'UTC' })}</h3>
+                <h3 className="text-xl font-semibold text-slate-800 mb-4">Transactions for {new Date(selectedDate).toLocaleDateString('en-GB')}</h3>
                 {dailyData.transactions.length > 0 ? (
                     <div className="overflow-x-auto">
                         <table className="min-w-full divide-y divide-slate-200">
